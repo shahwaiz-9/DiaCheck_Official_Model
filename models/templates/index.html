@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(220, 53, 69, 0.15);
+            padding: 50px;
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #dc3545, #ff6b7a, #dc3545);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #dc3545;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #dc3545;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+
+        .submit-btn {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(220, 53, 69, 0.35);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .result-box {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box.diabetic {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            border: 2px solid #dc3545;
+        }
+
+        .result-box.normal {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border: 2px solid #28a745;
+        }
+
+        .result-box h2 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .result-box.diabetic h2 {
+            color: #dc3545;
+        }
+
+        .result-box.normal h2 {
+            color: #28a745;
+        }
+
+        .result-box p {
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .error-box {
+            grid-column: 1 / -1;
+            background: #fff5f5;
+            border: 2px solid #dc3545;
+            border-radius: 12px;
+            padding: 15px 20px;
+            color: #dc3545;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 500px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 35px 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🩺 Diabetes Prediction</h1>
+            <p>Enter your health metrics to predict diabetes risk</p>
+        </div>
+        
+        <form action="/predict" method="POST" class="form-grid">
+            <div class="form-group">
+                <label for="pregnancies">Pregnancies</label>
+                <input type="number" id="pregnancies" name="pregnancies" placeholder="e.g., 2" step="1" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="glucose">Glucose (mg/dL)</label>
+                <input type="number" id="glucose" name="glucose" placeholder="e.g., 120" step="0.1" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="blood_pressure">Blood Pressure (mm Hg)</label>
+                <input type="number" id="blood_pressure" name="blood_pressure" placeholder="e.g., 80" step="0.1" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="skin_thickness">Skin Thickness (mm)</label>
+                <input type="number" id="skin_thickness" name="skin_thickness" placeholder="e.g., 20" step="0.1" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="insulin">Insulin (μU/mL)</label>
+                <input type="number" id="insulin" name="insulin" placeholder="e.g., 85" step="0.1" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="bmi">BMI (kg/m²)</label>
+                <input type="number" id="bmi" name="bmi" placeholder="e.g., 25.5" step="0.1" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="diabetes_pedigree">Diabetes Pedigree Function</label>
+                <input type="number" id="diabetes_pedigree" name="diabetes_pedigree" placeholder="e.g., 0.5" step="0.001" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="age">Age (years)</label>
+                <input type="number" id="age" name="age" placeholder="e.g., 35" step="1" min="0" required>
+            </div>
+            
+            <button type="submit" class="submit-btn">Predict</button>
+            
+            {% if prediction %}
+            <div class="result-box {{ result_class }}">
+                <div class="icon">{% if result_class == 'diabetic' %}⚠️{% else %}✅{% endif %}</div>
+                <h2>Result: {{ prediction }}</h2>
+                <p>{% if result_class == 'diabetic' %}Based on the provided data, there is a higher risk of diabetes. Please consult a healthcare professional.{% else %}Based on the provided data, the result appears normal. Continue maintaining a healthy lifestyle!{% endif %}</p>
+            </div>
+            {% endif %}
+            
+            {% if error %}
+            <div class="error-box">
+                <strong>Error:</strong> {{ error }}
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>
