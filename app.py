@@ -12,9 +12,14 @@ app = Flask(__name__)
 with open('Diabetes_model1.pkl', 'rb') as file:
     model = pickle.load(file)
 
+
+# Route for web application (Initial page)
 @app.route('/')
 def home():
     return render_template('index.html')
+
+
+# Route for web application
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -33,10 +38,6 @@ def predict():
         features = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, 
                               insulin, bmi, diabetes_pedigree, age]])
         
-        # Standardize the features
-        scaler = StandardScaler()
-        features = scaler.fit_transform(features)
-        
         # Make prediction
         prediction = model.predict(features)[0]
         
@@ -51,6 +52,38 @@ def predict():
     
     except Exception as e:
         return render_template('index.html', error=str(e))
+
+
+# Api route for application https request
+
+@app.route("/api/predict", methods=["POST"])
+def api_predict():
+    try:
+        data = request.get_json()
+
+        features = np.array([[
+            float(data["pregnancies"]),
+            float(data["glucose"]),
+            float(data["blood_pressure"]),
+            float(data["skin_thickness"]),
+            float(data["insulin"]),
+            float(data["bmi"]),
+            float(data["diabetes_pedigree"]),
+            float(data["age"])
+        ]])
+
+        prediction = int(model.predict(features)[0])
+
+        return jsonify({
+            "prediction": prediction,
+            "result": "Diabetic" if prediction == 1 else "Normal"
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+# Api route for application https request
 
 if __name__ == '__main__':
     app.run(debug=True)
