@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import pickle
 import numpy as np
 from sklearn.preprocessing import StandardScaler
@@ -59,7 +59,8 @@ def predict():
 @app.route("/api/predict", methods=["POST"])
 def api_predict():
     try:
-        data = request.get_json()
+        # Try to get JSON
+        data = request.get_json(force=True)  # <-- force=True ensures Flask parses JSON even if headers missing
 
         features = np.array([[
             float(data["pregnancies"]),
@@ -81,6 +82,7 @@ def api_predict():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 
 # Api route for application https request
