@@ -12,7 +12,7 @@ DiaCheck analyzes health-related parameters and predicts the likelihood of diabe
 
 - A **web-based model testing interface**
 - A **Flask REST API backend**
-- An **official Android mobile application (APK included)**
+- An **official Android mobile application (APK embedded in this repository)**
 
 ---
 
